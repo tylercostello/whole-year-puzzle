@@ -523,13 +523,31 @@ function renderStars(stars) {
   const full = Math.floor(stars);
   const half = stars - full >= 0.25;
   let html = '';
+
   for (let i = 0; i < 5; i++) {
     if (i < full) {
-      html += '★';
+      // ★ Full gold star
+      html += `<svg width="20" height="20" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;">
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#f5b342" stroke="#f5b342" stroke-width="0.5"/>
+      </svg>`;
     } else if (i === full && half) {
-      html += `<span style="background: linear-gradient(90deg, #f5b342 50%, #ddd 50%); -webkit-background-clip: text; background-clip: text; color: transparent;">★</span>`;
+      // ☆ Half star: gray outline + gold fill on the left half only
+      html += `<svg width="20" height="20" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;">
+        <defs>
+          <clipPath id="halfClip_${i}">
+            <rect x="0" y="0" width="12" height="24" />
+          </clipPath>
+        </defs>
+        <!-- Gray outline for the entire star -->
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#ddd" stroke-width="1.5"/>
+        <!-- Gold fill clipped to the left half -->
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#f5b342" stroke="#f5b342" stroke-width="0.5" clip-path="url(#halfClip_${i})"/>
+      </svg>`;
     } else {
-      html += '☆';
+      // ☆ Empty star (outline only)
+      html += `<svg width="20" height="20" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;">
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#ddd" stroke-width="1.5"/>
+      </svg>`;
     }
   }
   return html;
