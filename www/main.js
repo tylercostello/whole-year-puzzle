@@ -1,5 +1,5 @@
 import init, { get_board, solve_all } from "./pkg/whole_year_puzzle_solver.js";
-
+ 
 const PIECE_COLORS = [
   "#e07a5f", "#3d405b", "#81b29a", "#f2cc8f", "#98c1d9",
   "#e76f51", "#6d597a", "#b56576", "#355070",
