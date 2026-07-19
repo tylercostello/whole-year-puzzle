@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Whole Year Puzzle — Solver</title>
+<meta name="description" content="Every solution, for every day, for the Palmetto Puzzle Works Whole Year Puzzle. Solved in-browser with Rust and WebAssembly.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>The Whole Year Puzzle</h1>
+      <p>Every solution, for every day. Solved in your browser with Rust + WebAssembly.</p>
+    </header>
+
+    <div class="controls">
+      <select id="month-select" aria-label="Month"></select>
+      <select id="day-select" aria-label="Day"></select>
+      <button id="solve-btn">Solve</button>
+    </div>
+
+    <div id="board" aria-label="Puzzle board"></div>
+
+    <div class="nav">
+      <button id="prev-btn" aria-label="Previous solution">&larr;</button>
+      <span id="status">Pick a date and hit solve</span>
+      <button id="next-btn" aria-label="Next solution">&rarr;</button>
+    </div>
+
+    <footer>
+      Board &amp; pieces from Palmetto Puzzle Works' <em>Whole Year Puzzle</em> ·
+      <a href="https://github.com/tylercostello" target="_blank" rel="noopener">tylercostello</a>
+    </footer>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
