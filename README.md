@@ -34,23 +34,3 @@ cd www
 python3 -m http.server 8080
 # visit http://localhost:8080
 ```
-
-## Deploying to GitHub Pages
-
-This repo includes `.github/workflows/deploy.yml`, which builds the wasm
-package and publishes the `www/` folder to GitHub Pages automatically on
-every push to `main`.
-
-One-time setup in your GitHub repo:
-
-1. Push this repo to GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment → Source**, choose **GitHub Actions**.
-4. Push to `main` (or run the workflow manually from the **Actions** tab).
-
-Your site will be live at:
-- `https://<username>.github.io/` if this is your `<username>.github.io` repo, or
-- `https://<username>.github.io/<repo-name>/` if it's a regular project repo.
-
-All paths in `index.html`/`main.js` are relative, so both cases work
-without changes.
