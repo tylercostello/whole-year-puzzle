@@ -437,33 +437,6 @@ async function main() {
   document.getElementById("next-btn").addEventListener("click", () => navigate(1));
   document.getElementById("next-day-btn").addEventListener("click", onNextDay);
 
-  // Keep the SVG piece outlines in sync with the board whenever its rendered
-  // size changes (phone rotation, browser resize, zoom, etc.). Without this,
-  // a one-time draw becomes stale after rotation and the outlines drift off
-  // the colored cells until the page is reloaded.
-  const boardEl = document.getElementById("board");
-  const redraw = () => {
-    if (!solutions.length) return;
-    drawPieceLines(solutions[currentIndex]);
-    // Force the overlay to recompute its box; some mobile browsers keep a
-    // stale size after rotation, which leaves the outlines off the cells
-    // until the page is reloaded.
-    const svg = document.getElementById("piece-lines");
-    if (svg && svg.parentNode === boardEl) {
-      svg.remove();
-      boardEl.appendChild(svg);
-    }
-  };
-  if (typeof ResizeObserver !== "undefined") {
-    const ro = new ResizeObserver(() => requestAnimationFrame(redraw));
-    ro.observe(boardEl);
-  }
-  window.addEventListener("resize", () => requestAnimationFrame(redraw));
-  window.addEventListener("orientationchange", () => {
-    requestAnimationFrame(redraw);
-    setTimeout(redraw, 300);
-  });
-
   onSolve();
 }
 
@@ -630,7 +603,6 @@ function drawPieceLines(grid) {
   const svg = document.getElementById("piece-lines");
   svg.innerHTML = "";
   svg.setAttribute("viewBox", "0 0 700 700");
-  svg.setAttribute("preserveAspectRatio", "none");
   const ns = "http://www.w3.org/2000/svg";
   const size = 100;
 
