@@ -444,10 +444,6 @@ async function main() {
   const boardEl = document.getElementById("board");
   const redraw = () => {
     if (!solutions.length) return;
-    // Re-apply the piece colors as well as the outlines: colors are only
-    // painted inside render(), so they can go stale after a rotation while
-    // the freshly-redrawn outlines stay correct.
-    paintColors(solutions[currentIndex]);
     drawPieceLines(solutions[currentIndex]);
     // Force the overlay to recompute its box; some mobile browsers keep a
     // stale size after rotation, which leaves the outlines off the cells
@@ -496,17 +492,11 @@ function populateSelectors() {
 function buildBoardDom() {
   const boardEl = document.getElementById("board");
   boardEl.innerHTML = "";
-  cellEls = board.map((cell, i) => {
+  cellEls = board.map((cell) => {
     const div = document.createElement("div");
     div.className = "cell " + cell.kind;
     if (cell.kind === "month") div.textContent = MONTHS[cell.value];
     else if (cell.kind === "day") div.textContent = cell.value;
-    // Pin each cell to its exact grid row/column so its on-screen position can
-    // never drift out of sync with the SVG overlay (drawn from the same cell
-    // index). Keeps the painted colors under the right piece outlines even if
-    // the browser reflows the grid during phone rotation.
-    div.style.gridRowStart = String(Math.floor(i / 7) + 1);
-    div.style.gridColumnStart = String((i % 7) + 1);
     boardEl.appendChild(div);
     return div;
   });
@@ -588,21 +578,6 @@ function renderStars(stars) {
   return html;
 }
 
-function paintColors(grid) {
-  board.forEach((cell, i) => {
-    const el = cellEls[i];
-    el.classList.remove("open");
-    el.style.background = "";
-    if (cell.kind === "blocked") return;
-    const value = grid[i];
-    if (value === -2) {
-      el.classList.add("open");
-    } else if (value >= 0) {
-      el.style.background = PIECE_COLORS[value];
-    }
-  });
-}
-
 function render() {
   const status = document.getElementById("status");
   const prev = document.getElementById("prev-btn");
@@ -624,7 +599,18 @@ function render() {
   next.disabled = solutions.length < 2;
 
   const grid = solutions[currentIndex];
-  paintColors(grid);
+  board.forEach((cell, i) => {
+    const el = cellEls[i];
+    el.classList.remove("open");
+    el.style.background = "";
+    if (cell.kind === "blocked") return;
+    const value = grid[i];
+    if (value === -2) {
+      el.classList.add("open");
+    } else if (value >= 0) {
+      el.style.background = PIECE_COLORS[value];
+    }
+  });
 
   drawPieceLines(grid);
 
