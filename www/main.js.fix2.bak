@@ -444,7 +444,6 @@ async function main() {
   const boardEl = document.getElementById("board");
   const redraw = () => {
     if (!solutions.length) return;
-    layoutBoard();
     // Re-apply the piece colors as well as the outlines: colors are only
     // painted inside render(), so they can go stale after a rotation while
     // the freshly-redrawn outlines stay correct.
@@ -502,6 +501,12 @@ function buildBoardDom() {
     div.className = "cell " + cell.kind;
     if (cell.kind === "month") div.textContent = MONTHS[cell.value];
     else if (cell.kind === "day") div.textContent = cell.value;
+    // Pin each cell to its exact grid row/column so its on-screen position can
+    // never drift out of sync with the SVG overlay (drawn from the same cell
+    // index). Keeps the painted colors under the right piece outlines even if
+    // the browser reflows the grid during phone rotation.
+    div.style.gridRowStart = String(Math.floor(i / 7) + 1);
+    div.style.gridColumnStart = String((i % 7) + 1);
     boardEl.appendChild(div);
     return div;
   });
@@ -509,24 +514,6 @@ function buildBoardDom() {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.id = "piece-lines";
   boardEl.appendChild(svg);
-  layoutBoard();
-}
-
-function layoutBoard() {
-  const boardEl = document.getElementById("board");
-  const w = boardEl.getBoundingClientRect().width;
-  if (w <= 0) return;
-  if (boardEl.style.height !== w + "px") boardEl.style.height = w + "px";
-  const cell = w / 7;
-  for (let i = 0; i < cellEls.length; i++) {
-    const el = cellEls[i];
-    const r = Math.floor(i / 7);
-    const c = i % 7;
-    el.style.left = (c * cell) + "px";
-    el.style.top = (r * cell) + "px";
-    el.style.width = cell + "px";
-    el.style.height = cell + "px";
-  }
 }
 
 function onSolve() {
@@ -637,7 +624,6 @@ function render() {
   next.disabled = solutions.length < 2;
 
   const grid = solutions[currentIndex];
-  layoutBoard();
   paintColors(grid);
 
   drawPieceLines(grid);
